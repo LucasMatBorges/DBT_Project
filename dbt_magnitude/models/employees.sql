@@ -1,6 +1,9 @@
-
-select 
-od.order_id, od.product_id, od.unit_price, od.quantity, pr.product_name, pr.supplier_id, pr.category_id,
-od.unit_price*od.quantity total
-from {{source("sources","order_details")}} od
-left join {{source("sources","products")}} pr on (od.product_id = pr.product_id)
+WITH calc_employees AS (
+    SELECT 
+        EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM birth_date) AS age,
+        EXTRACT(YEAR FROM CURRENT_DATE) - EXTRACT(YEAR FROM hire_date) AS lenghtofservice,
+        first_name || ' ' || last_name AS name, 
+        *
+    FROM employees
+)
+SELECT * FROM calc_employees
