@@ -1,16 +1,20 @@
-with markup as (
-select * ,
-first_value(customer_id)
-over(partition by company_name, contact_name
-order by company_name
-rows between unbounded preceding and unbounded following) as result
-from {{source("sources","customers")}}
-), 
-removed as (
-    select distinct result from markup
-),
-final as (
-    select * from {{source("sources","customers")}} where customer_id in (select result from removed)
-)
+-- Create a markup with the first customer ID for each combination of company and contact
+WITH markup AS (
+    SELECT *, 
+        FIRST_VALUE(customer_id) OVER (
+            PARTITION BY company_name, contact_name
+            ORDER BY company_name
+            ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS result
+    FROM {{source("sources","customers")}}), 
 
-select * from final
+-- Get distinct customer IDs from the markup
+removed AS (
+    SELECT DISTINCT result FROM markup), 
+
+-- Filter the original data based on the distinct customer IDs
+final AS (
+    SELECT * FROM {{source("sources","customers")}} 
+    WHERE customer_id IN (SELECT result FROM removed))
+
+-- Return the final data
+SELECT * FROM final
