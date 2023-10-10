@@ -12,10 +12,10 @@ The main queries executed through DBT can be found within the `models` directory
 
 ### Directory Structure:
 
-dbt_project/
-dbt_project.yml # Project configuration file
-models/ # Directory containing all SQL models
-... # Various .sql files with model definitions
+* dbt_project/
+ * dbt_project.yml # Project configuration file
+ * models/ # Directory containing all SQL models
+ * ... # Various .sql files with model definitions
 
 ## Conclusion
 
